@@ -255,8 +255,10 @@ module JSONAPI
     end
 
     def custom_links_hash(source)
-      custom_links = source.custom_links(custom_generation_options)
-      (custom_links.is_a?(Hash) && custom_links) || {}
+      links = custom_links_hash(source)
+      links['self'] = link_builder.self_link(source) unless links.key?('self')
+      links.delete('self') if links.key?('self') && links[:self].nil?
+      links.compact
     end
 
     def top_level_source_key(source)
